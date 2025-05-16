@@ -4,6 +4,56 @@ from pdf_utils import extract_text_from_pdf
 from summarizer import summarize_text
 from email_utils import send_email
 
+# 🌿 Pistachio Theme CSS
+st.markdown("""
+    <style>
+    .stApp {
+        background-color: #f0f7f4;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    h1, h2, h3 {
+        color: #2f5233;
+    }
+
+    .stFileUploader {
+        background-color: #ffffff;
+        border: 2px dashed #a3c4a8;
+        border-radius: 10px;
+        padding: 1rem;
+    }
+
+    .stButton > button {
+        background-color: #8bcf9b;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .stButton > button:hover {
+        background-color: #72b48a;
+    }
+
+    footer {
+        color: #6a9985;
+        font-size: 0.85rem;
+        text-align: center;
+        padding-top: 2rem;
+    }
+
+    ul {
+        padding-left: 1.2rem;
+    }
+
+    li {
+        margin-bottom: 0.5rem;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # Set page config
 st.set_page_config(page_title="Smart Summary", page_icon="📄", layout="centered")
 
@@ -11,8 +61,8 @@ st.set_page_config(page_title="Smart Summary", page_icon="📄", layout="centere
 st.markdown("""
     <div style="text-align:center;">
         <img src="https://img.icons8.com/plasticine/100/summary-list.png" width="100"/>
-        <h1 style="color:#3B3B3B;">Smart Summary</h1>
-        <p style="font-size:18px; color:#555;">
+        <h1 style="color:#2f5233;">Smart Summary</h1>
+        <p style="font-size:18px; color:#3b5249;">
             Upload your PDF. Get a human-friendly summary in seconds.<br>
             <strong>Powered by ChatGPT</strong> — simplified, cleaned, and delivered.
         </p>
