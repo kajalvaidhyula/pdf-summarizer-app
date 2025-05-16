@@ -4,6 +4,9 @@ from pdf_utils import extract_text_from_pdf
 from summarizer import summarize_text
 from email_utils import send_email
 
+# ✅ Must be FIRST Streamlit command
+st.set_page_config(page_title="Smart Summary", page_icon="📄", layout="centered")
+
 # 🌿 Pistachio Theme CSS
 st.markdown("""
     <style>
@@ -54,9 +57,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Set page config
-st.set_page_config(page_title="Smart Summary", page_icon="📄", layout="centered")
-
 # Hero Section
 st.markdown("""
     <div style="text-align:center;">
@@ -103,11 +103,11 @@ if uploaded_file:
 st.markdown("---")
 st.markdown("### 🤔 Why not use ChatGPT directly?")
 st.markdown("""
-- ✓ You don’t need to copy-paste anything
-- ✓ Auto extracts PDF content — no mess or formatting
-- ✓ Clean, human-friendly summaries (no prompt writing)
-- ✓ Optional email delivery of results
-- ✓ No ChatGPT login or setup required
+- ✓ You don’t need to copy-paste anything  
+- ✓ Auto extracts PDF content — no mess or formatting  
+- ✓ Clean, human-friendly summaries (no prompt writing)  
+- ✓ Optional email delivery of results  
+- ✓ No ChatGPT login or setup required  
 """)
 
 # Footer
