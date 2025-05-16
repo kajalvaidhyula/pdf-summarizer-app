@@ -7,12 +7,13 @@ from email_utils import send_email
 # ✅ Must be FIRST Streamlit command
 st.set_page_config(page_title="Smart Summary", page_icon="📄", layout="centered")
 
-# 🌿 Pistachio Theme CSS
+# 🌿 Pistachio Theme CSS with improved text colors
 st.markdown("""
     <style>
     .stApp {
         background-color: #f0f7f4;
         font-family: 'Segoe UI', sans-serif;
+        color: #365b43;
     }
 
     h1, h2, h3 {
@@ -24,6 +25,7 @@ st.markdown("""
         border: 2px dashed #a3c4a8;
         border-radius: 10px;
         padding: 1rem;
+        color: #4a6753;
     }
 
     .stButton > button {
@@ -62,7 +64,7 @@ st.markdown("""
     <div style="text-align:center;">
         <img src="https://img.icons8.com/plasticine/100/summary-list.png" width="100"/>
         <h1 style="color:#2f5233;">Smart Summary</h1>
-        <p style="font-size:18px; color:#3b5249;">
+        <p style="font-size:18px; color:#4a6753;">
             Upload your PDF. Get a human-friendly summary in seconds.<br>
             <strong>Powered by ChatGPT</strong> — simplified, cleaned, and delivered.
         </p>
