@@ -6,7 +6,7 @@ from pdf_utils import extract_text_from_pdf
 from summarizer import summarize_text
 from email_utils import send_email
 
-# ✅ Must be the first command
+# ✅ Must be the first Streamlit command
 st.set_page_config(page_title="Smart Summary", page_icon="📄", layout="centered")
 
 # 🌿 Pistachio Theme CSS
@@ -16,18 +16,15 @@ st.markdown("""
         background-color: #f0f7f4;
         font-family: 'Segoe UI', sans-serif;
     }
-
     h1, h2, h3 {
         color: #2f5233;
     }
-
     .stFileUploader {
         background-color: #ffffff;
         border: 2px dashed #a3c4a8;
         border-radius: 10px;
         padding: 1rem;
     }
-
     .stButton > button {
         background-color: #8bcf9b;
         color: white;
@@ -37,29 +34,25 @@ st.markdown("""
         font-size: 1rem;
         transition: background-color 0.3s ease;
     }
-
     .stButton > button:hover {
         background-color: #72b48a;
     }
-
     footer {
         color: #6a9985;
         font-size: 0.85rem;
         text-align: center;
         padding-top: 2rem;
     }
-
     ul {
         padding-left: 1.2rem;
     }
-
     li {
         margin-bottom: 0.5rem;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# 🧠 Stripe setup
+# 🔐 Stripe setup
 stripe.api_key = st.secrets["STRIPE_SECRET_KEY"]
 STRIPE_PRICE_ID = st.secrets["STRIPE_PRICE_ID"]
 APP_URL = st.secrets["APP_URL"]
@@ -92,7 +85,7 @@ if uploaded_file:
     st.markdown("### Extracted Preview")
     st.write(extracted_text[:1000])
 
-    # 💸 Payment check
+    # 💳 Payment handler
     def pay_to_continue():
         checkout = stripe.checkout.Session.create(
             line_items=[{"price": STRIPE_PRICE_ID, "quantity": 1}],
@@ -102,17 +95,24 @@ if uploaded_file:
         )
         st.markdown(f"[🔐 Pay $0.14 CAD to Summarize]({checkout.url})", unsafe_allow_html=True)
 
-    # 🔄 Summary generation
-    if st.button("🌄 Generate Summary"):
-        if st.session_state["free_uses"] > 0:
+    # 🧠 Conditional summary logic
+    if st.session_state["free_uses"] > 0:
+        if st.button("🌄 Generate Summary (Free)"):
             st.session_state["free_uses"] -= 1
             with st.spinner("Summarizing using ChatGPT..."):
                 summary = summarize_text(st.session_state["extracted_text"])
                 st.session_state["summary"] = summary
-        else:
-            st.warning("Free limit reached. Please make a payment to continue.")
+    elif st.query_params.get("success") == "true":
+        if st.button("✅ Generate Paid Summary"):
+            with st.spinner("Summarizing using ChatGPT..."):
+                summary = summarize_text(st.session_state["extracted_text"])
+                st.session_state["summary"] = summary
+    else:
+        st.warning("You’ve used your 2 free summaries.")
+        if st.button("🔓 Unlock More Summaries ($0.14 CAD)"):
             pay_to_continue()
 
+    # ✉️ Email option
     if "summary" in st.session_state:
         st.markdown("### 📝 Summary")
         st.success(st.session_state["summary"])
@@ -126,7 +126,7 @@ if uploaded_file:
                 else:
                     st.warning("Please enter a valid email.")
 
-# ℹ️ FAQ
+# ❓ FAQ
 st.markdown("---")
 st.markdown("### 🤔 Why not use ChatGPT directly?")
 st.markdown("""
