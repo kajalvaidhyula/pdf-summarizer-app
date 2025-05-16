@@ -1,57 +1,71 @@
 import streamlit as st
-from pdf_utils import extract_text_from_pdf
+import os
 from summarizer import summarize_text
+from pdf_utils import extract_text_from_pdf
 from email_utils import send_email
 
-st.set_page_config(page_title="PDF Summarizer", layout="centered")
-st.title("📄 Summarize Any PDF using ChatGPT")
+# --- Page Config ---
+st.set_page_config(page_title="Smart Summary", page_icon="📄", layout="centered")
 
-# Initialize session state for text and summary
-if "extracted_text" not in st.session_state:
-    st.session_state.extracted_text = ""
-if "summary" not in st.session_state:
-    st.session_state.summary = ""
+# --- Title / Description ---
+st.markdown("""
+    <h1 style='text-align: center; font-size: 48px;'>📄 Smart Summary</h1>
+    <p style='text-align: center; font-size: 20px; color: #666;'>
+        Upload your PDF. Get a human-friendly summary in seconds.<br>
+        Powered by ChatGPT — simplified, cleaned, and delivered.
+    </p>
+""", unsafe_allow_html=True)
 
-# Upload and extract PDF
-uploaded_file = st.file_uploader("Upload your PDF", type=["pdf"])
+st.markdown("---")
+
+# --- File Upload ---
+uploaded_file = st.file_uploader("Upload your PDF", type="pdf", label_visibility="collapsed")
 
 if uploaded_file:
-    with st.spinner("Extracting text..."):
-        st.session_state.extracted_text = extract_text_from_pdf(uploaded_file)
+    # Save uploaded file to disk
+    with open("temp.pdf", "wb") as f:
+        f.write(uploaded_file.read())
 
-    st.subheader("Extracted Text Preview")
-    st.text(st.session_state.extracted_text[:1000] + '...')
+    st.success("✅ PDF uploaded successfully!")
 
-    # Summarize Button
-    if st.button("Summarize"):
-        with st.spinner("Summarizing..."):
-            st.session_state.summary = summarize_text(st.session_state.extracted_text)
+    # Extract and display text
+    st.markdown("### 🔍 Extracted Text Preview")
+    text = extract_text_from_pdf("temp.pdf")
+    st.session_state.extracted_text = text
+    st.text_area("", value=text, height=200)
 
-# If summary is available, show options
-if st.session_state.summary:
-    st.subheader("📌 Summary")
-    st.success(st.session_state.summary)
+    # Generate summary
+    st.markdown("### 🧠 AI-Generated Summary")
+    if st.button("✨ Summarize Now"):
+        summary = summarize_text(text)
+        st.session_state.summary = summary
+        st.text_area("Summary", value=summary, height=200)
 
-    # ✅ Download Button
-    st.download_button(
-        label="📥 Download Summary as .txt",
-        data=st.session_state.summary,
-        file_name="summary.txt",
-        mime="text/plain"
-    )
+        # Email section
+        st.markdown("---")
+        st.markdown("## 📩 Email the Summary")
+        with st.form("email_form"):
+            email = st.text_input("Enter your email")
+            submitted = st.form_submit_button("📨 Send Summary via Email")
+            if submitted:
+                if email:
+                    status = send_email(email, summary)
+                    if status:
+                        st.success(f"✅ Summary sent to {email}")
+                    else:
+                        st.error("❌ Failed to send email.")
+                else:
+                    st.warning("⚠️ Please enter a valid email.")
 
-    # ✅ Email Section
-    st.markdown("---")
-    st.subheader("📧 Email the Summary")
-
-    user_email = st.text_input("Enter your email address")
-
-    if st.button("Send Summary via Email"):
-        if user_email and "@" in user_email:
-            success = send_email(user_email, st.session_state.summary)
-            if success:
-                st.success(f"✅ Summary sent to {user_email}")
-            else:
-                st.error("❌ Failed to send email. Check configuration.")
-        else:
-            st.warning("Please enter a valid email address.")
+# --- FAQ / Trust Block ---
+st.markdown("""
+<hr style='margin-top: 40px;'>
+<h4>🙋‍♀️ Why not use ChatGPT directly?</h4>
+<ul>
+    <li>✔ You don’t need to copy-paste anything</li>
+    <li>✔ Auto extracts PDF content — no mess or formatting</li>
+    <li>✔ Clean, human-friendly summaries (no prompt writing)</li>
+    <li>✔ Optional email delivery of results</li>
+    <li>✔ No ChatGPT login or setup required</li>
+</ul>
+""", unsafe_allow_html=True)
