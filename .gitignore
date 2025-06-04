@@ -1,6 +1,20 @@
-# Ignore environment variables and sensitive files
-.env
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.egg-info/
+
+# Environments
+.env
+.venv/
+env/
 venv/
+
+# Streamlit
 .streamlit/secrets.toml
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
